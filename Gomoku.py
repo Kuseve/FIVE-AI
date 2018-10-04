@@ -1,10 +1,18 @@
-from __future__ import print_function
 import datetime
 import time
 import random
 import numpy as np
+import dropbox
 from flask import Flask
 
-app = Flask(__name__)
+score=0
 
-if__name__=='':
+#ドロボ(からファイルを持ってくる)
+def fromDropbox:
+  dbox=dropbox.Dropbox(os.environ["DROPBOX_KEY"])
+  dbox.users_get_current_account()
+  
+#ドロボ(にファイルを入れる)
+def intoDropbox:
+  dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
+  dbox.users_get_current_account()
