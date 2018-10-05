@@ -1,11 +1,14 @@
 from tkinter import *
 import numpy as np
 
+#ここら辺はグローバル変数とか定数とか
 #マスは15*15
 grid_height=15
 grid_width=15
 #手数記録用
 movedcount=0
+#既に駒が置かれているかどうか
+emporfull=np.array
 
 class fullScreen(object): 
     def __init__(self, master, **kwargs): 
