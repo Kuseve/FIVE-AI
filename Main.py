@@ -38,6 +38,7 @@ game_frame.pack(pady = 5, padx = 5)
 
 #マス目が左クリックされた際の処理
 def leftClicked(event):
+    global movedcount
     event.widget.configure(relief = 'ridge', bd = '1')
     gridText=Label(event.widget,text="○",bg='LightGray')
     gridText.place(width=28,height=28)
