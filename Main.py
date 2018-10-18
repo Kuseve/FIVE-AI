@@ -6,12 +6,10 @@ import numpy as np
 #マスは15*15
 grid_height=15
 grid_width=15
-
 #手数記録用
 movedcount=0
-#既に駒が置かれているかどうか
-emporfull=np.array
-      
+
+
 #メイン画面
 root = Tk()
 root.title("FIVE AI")
@@ -47,7 +45,7 @@ def leftClicked(event):
     gridText.place(width=28,height=28)
 
 #1度クリックされたマス目を操作できないようにする
-def stop(evemt):
+def stop(event):
     pass
 
 #マス目描画
