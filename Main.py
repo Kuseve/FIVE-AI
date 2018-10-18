@@ -1,4 +1,5 @@
 from tkinter import *
+import tkMessageBox
 import numpy as np
 
 #ここら辺はグローバル変数とか定数とか
@@ -60,4 +61,6 @@ for x in range(grid_height):
         frame.grid(row=x, column=y)
         i += 1
         
+tkMessageBox.showinfo('ゲーム開始','FIVE AIが開始されました。頑張って勝ってみてください。')
+      
 root.mainloop()
