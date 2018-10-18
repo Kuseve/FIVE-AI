@@ -6,10 +6,8 @@ import numpy as np
 #マスは15*15
 grid_height=15
 grid_width=15
-#手数記録用
+#手数記録用(ランキングで使う)
 movedcount=0
-#既に駒が置かれているかどうか
-emporfull=np.array
       
 #メイン画面
 root = Tk()
@@ -43,22 +41,20 @@ def leftClicked(event):
     event.widget.configure(relief = 'ridge', bd = '1')
     gridText=Label(event.widget,text="○",bg='LightGray')
     gridText.place(width=28,height=28)
+    movedcount=movedcount+1
 
 #1度クリックされたマス目を操作できないようにする
 def stop(evemt):
     pass
 
 #マス目描画
-i = 0
 frame_list = []
 for x in range(grid_height):
     for y in range(grid_width):
         frame = Frame(game_frame, width = 30, height = 30, bd = 3, relief = 'raised', bg = 'LightGray')
         frame.bind("<1>", leftClicked)
-        frame.num = i
         frame_list.append(frame)
         frame.grid(row=x, column=y)
-        i += 1
 
 #煽り
 messagebox.showinfo('ゲーム開始','FIVE AIが開始されました。頑張って勝ってみてください。')
