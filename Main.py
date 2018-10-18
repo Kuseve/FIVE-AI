@@ -6,6 +6,7 @@ import numpy as np
 #マスは15*15
 grid_height=15
 grid_width=15
+
 #手数記録用
 movedcount=0
 #既に駒が置かれているかどうか
@@ -40,6 +41,7 @@ game_frame.pack(pady = 5, padx = 5)
 
 #マス目が左クリックされた際の処理
 def leftClicked(event):
+
     event.widget.configure(relief = 'ridge', bd = '1')
     gridText=Label(event.widget,text="○",bg='LightGray')
     gridText.place(width=28,height=28)
@@ -58,7 +60,6 @@ for x in range(grid_height):
         frame.num = i
         frame_list.append(frame)
         frame.grid(row=x, column=y)
-        i += 1
 
 #煽り
 messagebox.showinfo('ゲーム開始','FIVE AIが開始されました。頑張って勝ってみてください。')
