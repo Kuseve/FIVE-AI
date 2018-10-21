@@ -6,8 +6,13 @@ import numpy as np
 #マスは15*15
 grid_height=15
 grid_width=15
+#マス目
+i = 0
+frame_list = []
 #手数記録用
 movedcount=0
+#ゲームモード(難易度)
+diffNum=-1
 
 
 #メイン画面
@@ -17,6 +22,36 @@ root.title("FIVE AI")
 root.state('zoomed')
 root.resizable(0,0)
 
+def grid():
+#マス目描画
+    for x in range(grid_height):
+        for y in range(grid_width):
+            frame = Frame(game_frame, width = 30, height = 30, bd = 3, relief = 'raised', bg = 'LightGray')
+            frame.bind("<1>", leftClicked)
+            frame.num = i
+            frame_list.append(frame)
+            frame.grid(row=x, column=y)
+
+#難度分け
+def we():
+    diffNum=1
+    grid()
+    messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:WEAK)')
+def mid():
+    diffNum=2
+    grid()
+    messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:MIDDLE)')
+def st():
+    diffNum=3
+    grid()
+    messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:STRONG)')
+def omg():
+    diffNum=4
+    grid()
+    messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:???)')
+def qui():
+    root.quit()
+    
 #メニュー
 menu_ROOT = Menu(root)
 root.configure(menu = menu_ROOT)
@@ -24,22 +59,22 @@ menu_GAME = Menu(menu_ROOT, tearoff = False)
 menu_ROOT.add_cascade(label = 'GAME', under = 4, menu = menu_GAME)
 
 #GAMEメニューの下でプルダウンで出す難易度選択
-menu_GAME.add_command(label = "WEAK", under = 3)
-menu_GAME.add_command(label = "MIDDLE", under = 3)
-menu_GAME.add_command(label = "STRONG", under = 3)
-menu_GAME.add_command(label = "?????", under = 3)
+menu_GAME.add_command(label = "WEAK", under = 3,command=we)
+menu_GAME.add_command(label = "MIDDLE", under = 3,command=mid)
+menu_GAME.add_command(label = "STRONG", under = 3,command=st)
+menu_GAME.add_command(label = "?????", under = 3,command=omg)
 
-menu_ROOT.add_command(label = "EXIT", under = 3)#exitの処理を入れたい(落ちる)
+menu_ROOT.add_command(label = "EXIT", under = 3,command=qui)
 
 #ゲーム画面配置
 root_frame = Frame(root, relief = 'groove', borderwidth = 5, bg = 'LightGray')
 game_frame = Frame(root_frame, width = 300, height = 300, relief = 'ridge', borderwidth = 3, bg = 'LightGreen')
 root_frame.pack()
 game_frame.pack(pady = 5, padx = 5)
+grid()
 
 #マス目が左クリックされた際の処理
 def leftClicked(event):
-
     event.widget.configure(relief = 'ridge', bd = '1')
     gridText=Label(event.widget,text="○",bg='LightGray')
     gridText.place(width=28,height=28)
@@ -48,19 +83,7 @@ def leftClicked(event):
 def stop(event):
     pass
 
-#マス目描画
-i = 0
-frame_list = []
-for x in range(grid_height):
-    for y in range(grid_width):
-        frame = Frame(game_frame, width = 30, height = 30, bd = 3, relief = 'raised', bg = 'LightGray')
-        frame.bind("<1>", leftClicked)
-        frame.num = i
-        frame_list.append(frame)
-        frame.grid(row=x, column=y)
-
-#煽り
-messagebox.showinfo('ゲーム開始','FIVE AIが開始されました。頑張って勝ってみてください。')
+messagebox.showinfo('難易度選択','この画面ではAIは動いていません。上のメニューから難易度を選んでください。駒を置くことはできます。')
 
 #メインループ
 root.mainloop()
