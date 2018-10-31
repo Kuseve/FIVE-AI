@@ -11,7 +11,7 @@ i = 0
 frame_list = []
 #0=empty,1=player,2=AI
 grids=np.zeros((grid_height, grid_width))
-#手数記録用(ランキングに使いたい)
+#手数記録用(ランキングと結果に使いたい)
 movedcount=0
 #ゲームモード(難易度)
 diffNum=-1
@@ -32,6 +32,14 @@ def leftClicked(x,y):
     gridText.place(width=28,height=28)
     movedcount=movedcount+1
     grids[x][y]=1
+    if diffnum==1:
+      weakai()
+    else if diffnum==2:
+      middleai()
+    else if diffnum==3:
+      strongai()
+    else
+      omgai() 
   else:
     massagebox.showinfo('駒を置くことができません','まだ駒が置かれていないマスにのみ駒を置くことができます。')    
 
@@ -95,13 +103,13 @@ game_frame = Frame(root_frame, width = 300, height = 300, relief = 'ridge', bord
 root_frame.pack()
 game_frame.pack(pady = 5, padx = 5)
 grid()
-
-#駒の並び判定
-#def judge():
-    #横の判定
-    
-
+#最初の注意事項
 messagebox.showinfo('難易度選択','この画面ではまだAIは動いていません。上のメニュー(AIの項目)から難易度を選んでください。(駒を置くことはできます)')
 
 #メインループ
 root.mainloop()
+
+
+#FIVE AI Project(2018.9-) by Kuske and severrabaen
+#AI-Kuske,(severrabaen)
+#Making-severrabaen
