@@ -11,7 +11,7 @@ i = 0
 frame_list = []
 #0=empty,1=player,2=AI
 grids=np.zeros((grid_height, grid_width))
-#手数記録用
+#手数記録用(ランキングに使いたい)
 movedcount=0
 #ゲームモード(難易度)
 diffNum=-1
@@ -26,7 +26,7 @@ root.state('zoomed')
 
 #マス目が左クリックされた際の処理
 def leftClicked(x,y):
-  if grids[x][y]==1:
+  if grids[x][y]==0:
     event.widget.configure(relief = 'ridge', bd = '1')
     gridText=Label(event.widget,text="○",bg='LightGray')
     gridText.place(width=28,height=28)
@@ -44,6 +44,17 @@ def grid():
             frame.num = i
             frame_list.append(frame)
             frame.grid(row=x, column=y)
+  
+#結果確認画面
+def result():
+  if diffNum==1:
+    messagebox.showinfo('おめでとうございます！！','あなたはWEAK AIに'+movedcount+'手で勝利しました！！このAIは簡単でしたか？')
+  else if diffNum==2:
+    messagebox.showinfo('おめでとうございます！！','あなたはMIDDLE AIに'+movedcount+'手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
+  else if diffNum==3:
+    messagebox.showinfo('おめでとうございます！！','あなたはSTRONG AIに'+movedcount+'手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
+  else if diffNum==4:
+    messagebox.showinfo('おめでとうございます！！','あなたは??? AIに'+movedcount+'手で勝利しました！！このメッセージを読んでいる人は地球上に居ないと思っています(そのくらい強いです)。')
 
 #難度分け
 def we():
