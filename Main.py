@@ -26,11 +26,14 @@ root.state('zoomed')
 
 #マス目が左クリックされた際の処理
 def leftClicked(x,y):
+  if grids[x][y]==1:
     event.widget.configure(relief = 'ridge', bd = '1')
     gridText=Label(event.widget,text="○",bg='LightGray')
     gridText.place(width=28,height=28)
     movedcount=movedcount+1
     grids[x][y]=1
+  else:
+    massagebox.showinfo('駒を置くことができません','まだ駒が置かれていないマスにのみ駒を置くことができます。')    
 
 def grid():
 #マス目描画
@@ -81,10 +84,6 @@ game_frame = Frame(root_frame, width = 300, height = 300, relief = 'ridge', bord
 root_frame.pack()
 game_frame.pack(pady = 5, padx = 5)
 grid()
-
-#1度クリックされたマス目を操作できないようにする
-def stop(event):
-    pass
 
 #駒の並び判定
 #def judge():
