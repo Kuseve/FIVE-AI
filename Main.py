@@ -9,18 +9,31 @@ grid_width=15
 #マス目
 i = 0
 frame_list = []
+#0=empty,1=player,2=AI
+grids=np.zeros((grid_height, grid_width))
 #手数記録用
 movedcount=0
 #ゲームモード(難易度)
 diffNum=-1
-
+#表示するメッセージ
+messageNum=-1
 
 #メイン画面
 root = Tk()
 root.title("FIVE AI")
 #フルスクリーン化
 root.state('zoomed')
-root.resizable(0,0)
+
+#マス目が左クリックされた際の処理
+def leftClicked(x,y):
+  if grids[x][y]==1:
+    event.widget.configure(relief = 'ridge', bd = '1')
+    gridText=Label(event.widget,text="○",bg='LightGray')
+    gridText.place(width=28,height=28)
+    movedcount=movedcount+1
+    grids[x][y]=1
+  else:
+    massagebox.showinfo('駒を置くことができません','まだ駒が置かれていないマスにのみ駒を置くことができます。')    
 
 def grid():
 #マス目描画
@@ -63,7 +76,6 @@ menu_GAME.add_command(label = "WEAK", under = 3,command=we)
 menu_GAME.add_command(label = "MIDDLE", under = 3,command=mid)
 menu_GAME.add_command(label = "STRONG", under = 3,command=st)
 menu_GAME.add_command(label = "?????", under = 3,command=omg)
-
 menu_ROOT.add_command(label = "EXIT", under = 3,command=qui)
 
 #ゲーム画面配置
@@ -73,17 +85,12 @@ root_frame.pack()
 game_frame.pack(pady = 5, padx = 5)
 grid()
 
-#マス目が左クリックされた際の処理
-def leftClicked(event):
-    event.widget.configure(relief = 'ridge', bd = '1')
-    gridText=Label(event.widget,text="○",bg='LightGray')
-    gridText.place(width=28,height=28)
+#駒の並び判定
+#def judge():
+    #横の判定
+    
 
-#1度クリックされたマス目を操作できないようにする
-def stop(event):
-    pass
-
-messagebox.showinfo('難易度選択','この画面ではAIは動いていません。上のメニューから難易度を選んでください。駒を置くことはできます。')
+messagebox.showinfo('難易度選択','この画面ではまだAIは動いていません。上のメニュー(AIの項目)から難易度を選んでください。(駒を置くことはできます)')
 
 #メインループ
 root.mainloop()
