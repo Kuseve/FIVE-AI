@@ -24,45 +24,48 @@ root.title("FIVE AI")
 #フルスクリーン化
 root.state('zoomed')
 
+def takegrid(event):
+        event.widget.configure(relief = 'ridge', bd = '1')
+        gridText=Label(event.widget,text="○",bg='LightGray')
+        gridText.place(width=28,height=28)
+        movedcount=movedcount+1
+        if diffnum==1:
+            weakai()
+        elif diffnum==2:
+            middleai()
+        elif diffnum==3:
+            strongai()
+        else:
+            omgai()
+            
 #マス目が左クリックされた際の処理
 def leftClicked(x,y):
-  if grids[x][y]==0:
-    event.widget.configure(relief = 'ridge', bd = '1')
-    gridText=Label(event.widget,text="○",bg='LightGray')
-    gridText.place(width=28,height=28)
-    movedcount=movedcount+1
-    grids[x][y]=1
-    if diffnum==1:
-      weakai()
-    else if diffnum==2:
-      middleai()
-    else if diffnum==3:
-      strongai()
-    else
-      omgai() 
-  else:
-    massagebox.showinfo('駒を置くことができません','まだ駒が置かれていないマスにのみ駒を置くことができます。')    
+        if grids[x][y]==0:
+            grids[x][y]=1
+            takegrid
+        else:
+            massagebox.showinfo('駒を置くことができません','まだ駒が置かれていないマスにのみ駒を置くことができます。')    
 
 def grid():
 #マス目描画
     for x in range(grid_height):
         for y in range(grid_width):
             frame = Frame(game_frame, width = 30, height = 30, bd = 3, relief = 'raised', bg = 'LightGray')
-            frame.bind("<1>", leftClicked)
+            frame.bind("<1>", leftClicked(x,y))
             frame.num = i
             frame_list.append(frame)
             frame.grid(row=x, column=y)
-  
-#結果確認画面
+            
 def result():
-  if diffNum==1:
-    messagebox.showinfo('おめでとうございます！！','あなたはWEAK AIに'+movedcount+'手で勝利しました！！このAIは簡単でしたか？')
-  else if diffNum==2:
-    messagebox.showinfo('おめでとうございます！！','あなたはMIDDLE AIに'+movedcount+'手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
-  else if diffNum==3:
-    messagebox.showinfo('おめでとうございます！！','あなたはSTRONG AIに'+movedcount+'手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
-  else if diffNum==4:
-    messagebox.showinfo('おめでとうございます！！','あなたは??? AIに'+movedcount+'手で勝利しました！！このメッセージを読んでいる人は地球上に居ないと思っています(そのくらい強いです)。')
+    #結果確認画面
+    if diffNum==1:
+        messagebox.showinfo('おめでとうございます！！','あなたはWEAK AIに'+movedcount+'手で勝利しました！！このAIは弱かったですか？弱かったですね。')
+    elif diffNum==2:
+        messagebox.showinfo('おめでとうございます！！','あなたはMIDDLE AIに'+movedcount+'手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
+    elif diffNum==3:
+        messagebox.showinfo('おめでとうございます！！','あなたはSTRONG AIに'+movedcount+'手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
+    elif diffNum==4:
+        messagebox.showinfo('おめでとうございます！！','あなたは??? AIに'+movedcount+'手で勝利しました！！このメッセージを読んでいる人は地球上に居ないと思っています(そのくらい強いです)。')
 
 #難度分け
 def we():
@@ -112,4 +115,4 @@ root.mainloop()
 
 #FIVE AI Project(2018.9-) by Kuske and severrabaen
 #AI-Kuske,(severrabaen)
-#Making-severrabaen
+#Game-severrabaen,(Kuske)
