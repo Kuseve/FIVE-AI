@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import Tk, messagebox
 import numpy as np
+import tensorflow as tf
 
 #ここら辺はグローバル変数とか定数とか
 #マスは15*15
