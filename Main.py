@@ -2,6 +2,10 @@ from tkinter import *
 from tkinter import Tk, messagebox
 import numpy as np
 import tensorflow as tf
+import dropbox
+import datetime
+import time
+from flask import Flask
 
 #ここら辺はグローバル変数とか定数とか
 #マスは15*15
