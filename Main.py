@@ -30,18 +30,18 @@ root.title("FIVE AI")
 root.state('zoomed')
 
 def takegrid(event):
-        global movedcount
+        global movedcount,diffNum
         event.widget.configure(relief = 'ridge', bd = '1')
         gridText=Label(event.widget,text="○",bg='LightGray')
         gridText.place(width=28,height=28)
         movedcount=movedcount+1
-        if diffnum==1:
+        if diffNum==1:
             weakai()
-        elif diffnum==2:
+        elif diffNum==2:
             middleai()
-        elif diffnum==3:
+        elif diffNum==3:
             strongai()
-        else:
+        elif diffNum==4:
             omgai()
             
 #マス目が左クリックされた際の処理
@@ -74,8 +74,9 @@ def intoDropbox():
     dbox.users_get_current_account()
 
 def ranking():
-    # ドロボを使用してランキングを作りたい
+    # Dropboxを使用してランキングを作りたい
     fromDropbox()
+    intoDropbox()
         
 def result():
     global diffNum
@@ -87,7 +88,7 @@ def result():
     elif diffNum==3:
         messagebox.showinfo('おめでとうございます！！','あなたはSTRONG AIに'+movedcount+'手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
     elif diffNum==4:
-        messagebox.showinfo('おめでとうございます！！','あなたは??? AIに'+movedcount+'手で勝利しました！！このメッセージを読んでいる人は地球上に居ないと思っています(そのくらい強いです)。')
+        messagebox.showinfo('おめでとうございます！！','あなたは??? AIに'+movedcount+'手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
     
     ranking()
 
