@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import Tk, messagebox
 import numpy as np
+import tensorflow as tf
 
 #ここら辺はグローバル変数とか定数とか
 #マスは15*15
@@ -25,6 +26,7 @@ root.title("FIVE AI")
 root.state('zoomed')
 
 def takegrid(event):
+        global movedcount
         event.widget.configure(relief = 'ridge', bd = '1')
         gridText=Label(event.widget,text="○",bg='LightGray')
         gridText.place(width=28,height=28)
@@ -40,14 +42,15 @@ def takegrid(event):
             
 #マス目が左クリックされた際の処理
 def leftClicked(x,y):
+        global grids
         if grids[x][y]==0:
             grids[x][y]=1
             takegrid
         else:
             massagebox.showinfo('駒を置くことができません','まだ駒が置かれていないマスにのみ駒を置くことができます。')    
 
-def grid():
 #マス目描画
+def grid():
     for x in range(grid_height):
         for y in range(grid_width):
             frame = Frame(game_frame, width = 30, height = 30, bd = 3, relief = 'raised', bg = 'LightGray')
@@ -55,8 +58,23 @@ def grid():
             frame.num = i
             frame_list.append(frame)
             frame.grid(row=x, column=y)
-            
+        
+def fromDropbox():
+    global movedcount
+    dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
+    dbox.users_get_current_account()
+                      
+def intoDropbox():
+    global movedcount
+    dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
+    dbox.users_get_current_account()
+
+def ranking():
+    # ドロボを使用してランキングを作りたい
+    fromDropbox()
+        
 def result():
+    global diffNum
     #結果確認画面
     if diffNum==1:
         messagebox.showinfo('おめでとうございます！！','あなたはWEAK AIに'+movedcount+'手で勝利しました！！このAIは弱かったですか？弱かったですね。')
@@ -66,21 +84,27 @@ def result():
         messagebox.showinfo('おめでとうございます！！','あなたはSTRONG AIに'+movedcount+'手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
     elif diffNum==4:
         messagebox.showinfo('おめでとうございます！！','あなたは??? AIに'+movedcount+'手で勝利しました！！このメッセージを読んでいる人は地球上に居ないと思っています(そのくらい強いです)。')
+    
+    ranking()
 
 #難度分け
 def we():
+    global diffNum
     diffNum=1
     grid()
     messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:WEAK)')
 def mid():
+    global diffNum
     diffNum=2
     grid()
     messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:MIDDLE)')
 def st():
+    global diffNum
     diffNum=3
     grid()
     messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:STRONG)')
 def omg():
+    global diffNum
     diffNum=4
     grid()
     messagebox.showinfo('Notification','ゲームモードが変更されました(Gamemode:???)')
@@ -101,6 +125,7 @@ menu_GAME.add_command(label = "?????", under = 3,command=omg)
 menu_ROOT.add_command(label = "EXIT", under = 3,command=qui)
 
 #ゲーム画面配置
+root.configure(background='')#色を決める
 root_frame = Frame(root, relief = 'groove', borderwidth = 5, bg = 'LightGray')
 game_frame = Frame(root_frame, width = 300, height = 300, relief = 'ridge', borderwidth = 3, bg = 'LightGreen')
 root_frame.pack()
