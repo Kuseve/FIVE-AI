@@ -78,7 +78,7 @@ def ranking():
     fromDropbox()
     intoDropbox()
         
-def result():
+def win():
     global diffNum
     #結果確認画面
     if diffNum==1:
@@ -92,6 +92,16 @@ def result():
     
     ranking()
 
+def lose():
+        if diffNum==1:
+                messagebox.showinfo('残念・・・','あなたはWEAK AIに'+movedcount+'手粘ったものの負けてしまいました・・・')
+        elif diffNum==2:
+                messagebox.showinfo('残念・・・','あなたはMIDDLE AIに'+movedcount+'手粘ったものの負けてしまいました・・・')
+        elif diffNum==3:
+                messagebox.showinfo('残念・・・','あなたはSTRONG AIに'+movedcount+'手粘ったものの負けてしまいました・・・')
+        elif diffNum==4:
+                messagebox.showinfo('残念・・・','あなたは??? AIに'+movedcount+'手粘ったものの負けてしまいました・・・')
+                
 #難度分け
 def we():
     global diffNum
