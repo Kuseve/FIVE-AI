@@ -1,2 +1,2 @@
 # FIVE-AI
-五目並べで対戦するAIです。4つの難易度があります。Python3を用いて実装しています。
+Artificial intelligence that battle against you in Gobang, which is Japanese traditional game.
