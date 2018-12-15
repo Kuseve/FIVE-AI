@@ -22,7 +22,6 @@ class Point:
 # マスは15*15
 # gridSize = {'width': 15, 'height': 15}
 gridSize = Size(15, 15)
-print(gridSize.width)
 #grid_height = 15
 #grid_width = 15
 
@@ -65,7 +64,7 @@ if isDebug == True:
     print(playerState)
 
 # マップのデータ
-grids = np.zeros((grid_height, grid_width))
+grids = np.zeros(gridSize.width, gridSize.height)
 
 # 表示するメッセージ(<- 何に使うの？)
 # messageNum = -1
