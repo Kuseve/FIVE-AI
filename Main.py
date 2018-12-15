@@ -26,6 +26,7 @@ print(gridSize.width)
 #grid_height = 15
 #grid_width = 15
 
+
 # デバッグモードのフラグ
 isDebug = True
 
@@ -39,6 +40,8 @@ class gridState(IntEnum):
     player = auto()
     AI = auto()
 
+gridText = ['', '○', 'x']
+
 # AIの強さ
 class AILevel(IntEnum):
     week = 0
@@ -50,6 +53,7 @@ class AILevel(IntEnum):
 class gameMode(IntEnum):
     Normal = 0  # AIとの戦い
     quit = auto()  # やめる
+
 
 # Playerの情報
 # 'movedCount'は手数記録用(ランキングと結果に使いたい)(<- 駒の数を数えて計算すればいいのでは？)
@@ -66,6 +70,7 @@ grids = np.zeros((grid_height, grid_width))
 # 表示するメッセージ(<- 何に使うの？)
 # messageNum = -1
 
+
 # メイン画面
 root = Tk()
 root.title("FIVE AI")
@@ -74,54 +79,58 @@ root.state('zoomed')
 
 class gameGrid:
     # hash: そのオブジェクト固有の値で、それを判別できるような値(気に入らなかったらidでもいいけどね)
-    def __init__(self, int hash, Point point):
+
+    def __init__(self, hash: int, point: Point):
         self.hash = hash
         self.state = gridState.empty
         self.point = point
         self.frame = Frame(game_frame, width=30, height=30,
                       bd=3, relief='raised', bg='LightGray')
-        self.frame.bind("<1>", leftClicked)
-        global frame_list
-        frame_list.append(frame)
-        self.frame.grid(row=point.x, column=poiny.y)
+        self.frame.bind("<1>", leftClicked) # イベントの設定
+        self.frame.num = hash
+        self.frame.grid(row=point.x, column=point.y)
 
 # マス目が左クリックされた際の処理
 def leftClicked(event):
-    global grids
-    if grids[event.widget.point.x][event.widget.point.y] == gridState.empty:
-        grids[event.widget.point.x][event.widget.point.y] = gridState.player
-        changeGrid(event.widget.point, gridState.player)
+    global grids, playerState
+    hash = event.widget.num
+    if grids[frame_list[hash].point.x][frame_list[hash].point.y] == gridState.empty:
+        grids[frame_list[hash].point.x][frame_list[hash].point.y] = gridState.player
+        playerState['movedCount'] += 1
+        changeGrid(frame_list[hash].point, hash, gridState.player)
+
+        # AIのターン
+        if diffNum == 1:
+            weakai()
+        elif diffNum == 2:
+            middleai()
+        elif diffNum == 3:
+            strongai()
+        elif diffNum == 4:
+            omgai()
+
     else:
-        massagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
+        messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
 
-def changeGrid(Point point, int toState):
+# マス目の状態を変更する
+def changeGrid(point: Point, hash: int, toState: int):
     if isDebug == True:
-        massagebox.showinfo('changeGridが呼ばれました')
-    global movedcount, diffNum
-    event.widget.configure(relief='ridge', bd='1')
-    gridText = Label(event.widget, text="○", bg='LightGray')
-    gridText.place(width=28, height=28)
-    movedcount = movedcount + 1
-    if diffNum == 1:
-        weakai()
-    elif diffNum == 2:
-        middleai()
-    elif diffNum == 3:
-        strongai()
-    elif diffNum == 4:
-        omgai()
+        messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
+    global movedcount, diffNum, gridText, frame_list
+    frame_list[hash].frame.configure(relief='ridge', bd='1')
 
+    frame_list[hash].textLabel = Label(frame_list[hash].frame, text = gridText[toState], bg = 'LightGray')
+    frame_list[hash].textLabel.place(width = 28, height = 28)
 
-# マス目描画
+# マス目生成
 def grid():
+    global frame_list
+    i = 0
     for x in range(grid_height):
         for y in range(grid_width):
-            frame = Frame(game_frame, width=30, height=30,
-                          bd=3, relief='raised', bg='LightGray')
-            frame.bind("<1>", leftClicked(x, y))
-            frame.num = i
-            frame_list.append(frame)
-            frame.grid(row=x, column=y)
+            frame_list.append(gameGrid(i, Point(x, y)))
+            i += 1
+
 
 def fromDropbox():
     global movedcount
@@ -135,7 +144,6 @@ def ranking():
     # Dropboxを使用してランキングを作りたい
     fromDropbox()
     intoDropbox()
-
 def win():
     global diffNum
     # 結果確認画面
@@ -153,7 +161,7 @@ def win():
                             '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
     # ランキングに登録
     ranking()
-    
+
 def lose():
     if diffNum == 1:
         messagebox.showinfo('残念・・・', 'あなたはWEAK AIに' +
@@ -193,19 +201,20 @@ def omg():
 def qui():
     root.quit()
 
+
 # メニュー
 menu_ROOT = Menu(root)
 root.configure(menu=menu_ROOT)
 menu_GAME = Menu(menu_ROOT, tearoff=False)
 
-menu_ROOT.add_cascade(label='GAME(G)', under=4, menu=menu_GAME)
-menu_ROOT.add_command(label="EXIT(E)", under=3, command=qui)
+menu_ROOT.add_cascade(label='GAME(G)', under=5, menu=menu_GAME)
+menu_ROOT.add_command(label='EXIT(E)', under=5, command=qui)
 
 # GAMEメニューの下でプルダウンで出す難易度選択
-menu_GAME.add_command(label="WEAK(W)", under=3, command=we)
-menu_GAME.add_command(label="MIDDLE(M)", under=3, command=mid)
-menu_GAME.add_command(label="STRONG(S)", under=3, command=st)
-menu_GAME.add_command(label="?????(P)", under=3, command=omg)
+menu_GAME.add_command(label='WEAK(W)', under=5, command=we)
+menu_GAME.add_command(label='MIDDLE(M)', under=7, command=mid)
+menu_GAME.add_command(label='STRONG(S)', under=7, command=st)
+menu_GAME.add_command(label='?????(P)', under=6, command=omg)
 
 # ゲーム画面配置
 root.configure(background='')  # 色を決める
@@ -221,6 +230,7 @@ messagebox.showinfo(
 
 # メインループ
 root.mainloop()
+
 
 # FIVE AI Project(2018.9-) by Kuske and severrabaen
 # AI-Kuske,(severrabaen)
