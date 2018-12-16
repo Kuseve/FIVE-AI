@@ -6,7 +6,7 @@ import datetime
 import time
 from enum import *
 from flask import Flask
-import tensorflow as tf
+#import tensorflow as tf
 #import AI
 
 #todo:define.pyを作る(chickenがやる)
@@ -78,6 +78,17 @@ class gameGrid:
         self.frame.bind("<1>", leftClicked) # イベントの設定
         self.frame.num = hash
         self.frame.grid(row=point.x, column=point.y)
+    
+#マス目が全部埋まってるか確認(埋まっているならTrue,elseはFalseを返す)
+def isFill():
+    i=0
+    j=0
+    fill=True
+    for i in range(gridSize.width):
+        for j in range(gridSize.height):
+            if  not frame_list[i][j]=='o' and not frame_list[i][j]=='x':
+                fill=False
+    return fill
 
 # マス目が左クリックされた際の処理
 def leftClicked(event):
@@ -87,6 +98,8 @@ def leftClicked(event):
         grids[frame_list[hash].point.x][frame_list[hash].point.y] = gridState.player
         playerState['movedCount'] += 1
         changeGrid(frame_list[hash].point, hash, gridState.player)
+        if isFill()==True:
+            win()
         # AIのターン
         if playerState['AILevel'] == AILevel.week:
             weakAI()
@@ -96,6 +109,8 @@ def leftClicked(event):
             strongAI()
         elif playerState['AILevel'] == AILevel.omg:
             omgAI()
+        if isFill()==True:
+            win()
     else:   # ラベルの隙間をクリックしたとき
         messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
 
