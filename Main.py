@@ -1,5 +1,5 @@
 from tkinter import *
-#from tkinter import Tk, messagebox
+from tkinter import messagebox
 import numpy as np
 #import dropbox
 import datetime
@@ -64,7 +64,7 @@ if isDebug == True:
     print(playerState)
 
 # マップのデータ
-grids = np.zeros(gridSize.width, gridSize.height)
+grids = np.zeros((gridSize.width, gridSize.height))
 
 # 表示するメッセージ(<- 何に使うの？)
 # messageNum = -1
@@ -125,8 +125,8 @@ def changeGrid(point: Point, hash: int, toState: int):
 def grid():
     global frame_list
     i = 0
-    for x in range(grid_height):
-        for y in range(grid_width):
+    for x in range(gridSize.width):
+        for y in range(gridSize.height):
             frame_list.append(gameGrid(i, Point(x, y)))
             i += 1
 
