@@ -1,11 +1,15 @@
 from tkinter import *
 from tkinter import messagebox
 import numpy as np
-import dropbox
+#import dropbox
 import datetime
 import time
 from enum import *
 from flask import Flask
+import tensorflow as tf
+#import AI
+
+#todo:define.pyを作る(chickenがやる)
 
 # 構造体の宣言
 class Size:
@@ -18,7 +22,6 @@ class Point:
         self.x = x
         self.y = y
 
-# ここら辺はグローバル変数とか定数とか
 # マスは15*15
 gridSize = Size(15, 15)
 
@@ -49,9 +52,6 @@ class gameMode(IntEnum):
     quit = auto()  # やめる
 
 # Playerの情報
-# 'movedCount'は手数記録用(ランキングと結果に使いたい)(<- 駒の数を数えて計算すればいいのでは？)(<-2重ループ書いて見るのが個人的にめんどくさいため)
-# ゲームモード(難易度)(<- diffだと違いを表してるみたい)(<-modeNumにしました)(playerState['AILebel']を使いませんか？)
-modeNum = -1
 playerState = {'gameMode': gameMode(0), 'AILevel': AILevel(0), 'movedCount': 0}
 
 if isDebug == True:
@@ -66,15 +66,15 @@ root = Tk()
 root.title("FIVE AI")
 # フルスクリーン化
 root.state('zoomed')
+#サイズ変更不可にする(バグるのでね)
+root.resizable(0,0)
 
 class gameGrid:
-    # hash: そのオブジェクト固有の値で、それを判別できるような値(気に入らなかったらidでもいいけどね)
     def __init__(self, hash: int, point: Point):
         self.hash = hash
         self.state = gridState.empty
         self.point = point
-        self.frame = Frame(game_frame, width=30, height=30,
-                      bd=3, relief='raised', bg='LightGray')
+        self.frame = Frame(game_frame, width=30,height=30,bd=3, relief='raised', bg='LightGray')
         self.frame.bind("<1>", leftClicked) # イベントの設定
         self.frame.num = hash
         self.frame.grid(row=point.x, column=point.y)
@@ -87,23 +87,20 @@ def leftClicked(event):
         grids[frame_list[hash].point.x][frame_list[hash].point.y] = gridState.player
         playerState['movedCount'] += 1
         changeGrid(frame_list[hash].point, hash, gridState.player)
-
         # AIのターン
         if playerState['AILevel'] == AILevel.week:
-            weakai()
+            weakAI()
         elif playerState['AILevel'] == AILevel.middle:
-            middleai()
+            middleAI()
         elif playerState['AILevel'] == AILevel.strong:
-            strongai()
+            strongAI()
         elif playerState['AILevel'] == AILevel.omg:
-            omgai()
-
+            omgAI()
     else:   # ラベルの隙間をクリックしたとき
         messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
 
 def textLabelClicked(event):
     messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
-
 
 # マス目の状態を変更する
 def changeGrid(point: Point, hash: int, toState: int):
@@ -111,12 +108,10 @@ def changeGrid(point: Point, hash: int, toState: int):
         messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
     global movedcount, diffNum, gridText, frame_list
     frame_list[hash].frame.configure(relief='ridge', bd='1')
-
     # マスの中に文字を表示
     frame_list[hash].textLabel = Label(frame_list[hash].frame, text = gridText[toState], bg = 'LightGray')
     frame_list[hash].textLabel.place(width = 28, height = 28)
     frame_list[hash].textLabel.bind('<1>', textLabelClicked)
-
 
 # マス目生成
 def grid():
@@ -127,19 +122,20 @@ def grid():
             frame_list.append(gameGrid(i, Point(x, y)))
             i += 1
 
-
 def fromDropbox():
     global movedcount
     #ドロップボックスのアカウント取得
     dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
     dbox.users_get_current_account()
+    
 def intoDropbox():
     global movedcount
     #ドロップボックスのアカウント取得
     dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
     dbox.users_get_current_account()
+
 def ranking():
-    # Dropboxを使用してランキングを作りたい
+    # Dropboxを使用して難易度ごとのランキングを作りたい
     fromDropbox()
     intoDropbox()
 
@@ -154,11 +150,12 @@ def win():
         messagebox.showinfo('おめでとうございます！！', 'あなたはSTRONG AIに' + movedcount + '手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
     elif modeNum == 4:
         messagebox.showinfo('おめでとうございます！！', 'あなたは??? AIに' + movedcount + '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
-    # ランキングに登録
+    # ランキングに登録する
     ranking()
 
 def lose():
     global modeNum
+    # 結果確認画面
     if modeNum == 1:
         messagebox.showinfo('残念・・・', 'あなたはWEAK AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
     elif modeNum == 2:
@@ -168,7 +165,7 @@ def lose():
     elif modeNum == 4:
         messagebox.showinfo('残念・・・', 'あなたは??? AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
 
-# 難度分け
+# 難易度選択時の処理
 def we():
     global modeNum
     modeNum = 1
@@ -190,34 +187,33 @@ def omg():
     grid()
     messagebox.showinfo('Notification', 'ゲームモードが変更されました(Gamemode:???)')
 
+#ゲームをやめる
 def qui():
     root.quit()
 
-# メニュー
+# メニューの要素
 menu_ROOT = Menu(root)
 root.configure(menu=menu_ROOT)
 menu_GAME = Menu(menu_ROOT, tearoff=False)
-
-menu_ROOT.add_cascade(label='GAME(G)', under=5, menu=menu_GAME)
-menu_ROOT.add_command(label='EXIT(E)', under=5, command=qui)
+menu_ROOT.add_cascade(label='GAME', under=5, menu=menu_GAME)
+menu_ROOT.add_command(label='EXIT', under=5, command=qui)
 
 # GAMEメニューの下でプルダウンで出す難易度選択
-menu_GAME.add_command(label='WEAK(W)', under=5, command=we)
-menu_GAME.add_command(label='MIDDLE(M)', under=7, command=mid)
-menu_GAME.add_command(label='STRONG(S)', under=7, command=st)
-menu_GAME.add_command(label='?????(P)', under=6, command=omg)
+menu_GAME.add_command(label='WEAK', under=5, command=we)
+menu_GAME.add_command(label='MIDDLE', under=7, command=mid)
+menu_GAME.add_command(label='STRONG', under=7, command=st)
+menu_GAME.add_command(label='?????', under=6, command=omg)
 
-# ゲーム画面配置
-root.configure(background='')  # 色を決める
+# 要素をゲーム画面に配置
+root.configure(background='gray')  # 暫定色
 root_frame = Frame(root, relief='groove', borderwidth=5, bg='LightGray')
-game_frame = Frame(root_frame, width=300, height=300,
-                   relief='ridge', borderwidth=3, bg='LightGreen')
+game_frame = Frame(root_frame, width=300, height=300,relief='ridge', borderwidth=3, bg='LightGreen')
 root_frame.pack()
 game_frame.pack(pady=5, padx=5)
 grid()
 
 # 最初の注意事項
-messagebox.showinfo('難易度選択', 'この画面ではまだAIは動いていません。上のメニュー(AIの項目)から難易度を選んでください。(駒を置くことはできます)')
+messagebox.showinfo('注意！！', 'この画面ではまだAIは動いていません。上のメニュー(GAMEの項目)から難易度を選んでください。(駒を置くことはできます)')
 
 # メインループ
 root.mainloop()
