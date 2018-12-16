@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import Tk, messagebox
+from tkinter import messagebox
 import numpy as np
 import dropbox
 import datetime
@@ -21,7 +21,6 @@ class Point:
 # ここら辺はグローバル変数とか定数とか
 # マスは15*15
 gridSize = Size(15, 15)
-print(gridSize.width)
 grid_height = 15
 grid_width = 15
 
@@ -37,6 +36,8 @@ class gridState(IntEnum):
     empty = 0
     player = auto()
     AI = auto()
+
+gridText = ['', '○', 'x']
 
 # AIの強さ
 class AILevel(IntEnum):
@@ -77,49 +78,51 @@ class gameGrid:
         self.point = point
         self.frame = Frame(game_frame, width=30, height=30,
                       bd=3, relief='raised', bg='LightGray')
-        self.frame.bind("<1>", leftClicked)
-        global frame_list
-        frame_list.append(frame)
-        self.frame.grid(row=point.x, column=poiny.y)
+        self.frame.bind("<1>", leftClicked) # イベントの設定
+        self.frame.num = hash
+        self.frame.grid(row=point.x, column=point.y)
 
 # マス目が左クリックされた際の処理
 def leftClicked(event):
-    global grids
-    if grids[event.widget.point.x][event.widget.point.y] == gridState.empty:
-        grids[event.widget.point.x][event.widget.point.y] = gridState.player
-        changeGrid(event.widget.point, gridState.player)
+    global grids, playerState
+    hash = event.widget.num
+    if grids[frame_list[hash].point.x][frame_list[hash].point.y] == gridState.empty:
+        grids[frame_list[hash].point.x][frame_list[hash].point.y] = gridState.player
+        playerState['movedCount'] += 1
+        changeGrid(frame_list[hash].point, hash, gridState.player)
+
+        # AIのターン
+        if diffNum == 1:
+            weakai()
+        elif diffNum == 2:
+            middleai()
+        elif diffNum == 3:
+            strongai()
+        elif diffNum == 4:
+            omgai()
+
     else:
-        massagebox.showinfo('駒を置くことができません!', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
+        messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
 
-#盤の状態を変える
-def changeGrid(Point point, int toState):
+# マス目の状態を変更する
+def changeGrid(point: Point, hash: int, toState: int):
     if isDebug == True:
-        massagebox.showinfo('changeGridが呼ばれました')
-    global movedcount, modeNum
-    event.widget.configure(relief='ridge', bd='1')
-    gridText = Label(event.widget, text="○", bg='LightGray')
-    gridText.place(width=28, height=28)
-    movedcount = movedcount + 1
-    if modeNum == 1:
-        weakai()
-    elif modeNum == 2:
-        middleai()
-    elif modeNum == 3:
-        strongai()
-    elif modeNum == 4:
-        omgai()
+        messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
+    global movedcount, diffNum, gridText, frame_list
+    frame_list[hash].frame.configure(relief='ridge', bd='1')
 
+    frame_list[hash].textLabel = Label(frame_list[hash].frame, text = gridText[toState], bg = 'LightGray')
+    frame_list[hash].textLabel.place(width = 28, height = 28)
 
-# マス目配置
+# マス目生成
 def grid():
-    for x in range(grid_height):
-        for y in range(grid_width):
-            frame = Frame(game_frame, width=30, height=30,
-                          bd=3, relief='raised', bg='LightGray')
-            frame.bind("<1>", leftClicked(x, y))
-            frame.num = i
-            frame_list.append(frame)
-            frame.grid(row=x, column=y)
+    global frame_list
+    i = 0
+    for x in range(gridSize.width):
+        for y in range(gridSize.height):
+            frame_list.append(gameGrid(i, Point(x, y)))
+            i += 1
+
 
 def fromDropbox():
     global movedcount
@@ -191,14 +194,14 @@ menu_ROOT = Menu(root)
 root.configure(menu=menu_ROOT)
 menu_GAME = Menu(menu_ROOT, tearoff=False)
 
-menu_ROOT.add_cascade(label='GAME(G)', under=4, menu=menu_GAME)
-menu_ROOT.add_command(label="EXIT(E)", under=3, command=qui)
+menu_ROOT.add_cascade(label='GAME(G)', under=5, menu=menu_GAME)
+menu_ROOT.add_command(label='EXIT(E)', under=5, command=qui)
 
 # GAMEメニューの下でプルダウンで出す難易度選択
-menu_GAME.add_command(label="WEAK(W)", under=3, command=we)
-menu_GAME.add_command(label="MIDDLE(M)", under=3, command=mid)
-menu_GAME.add_command(label="STRONG(S)", under=3, command=st)
-menu_GAME.add_command(label="?????(P)", under=3, command=omg)
+menu_GAME.add_command(label='WEAK(W)', under=5, command=we)
+menu_GAME.add_command(label='MIDDLE(M)', under=7, command=mid)
+menu_GAME.add_command(label='STRONG(S)', under=7, command=st)
+menu_GAME.add_command(label='?????(P)', under=6, command=omg)
 
 # ゲーム画面配置
 root.configure(background='')  # 色を決める
