@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import numpy as np
-#import dropbox
+import dropbox
 import datetime
 import time
 from enum import *
@@ -20,17 +20,15 @@ class Point:
 
 # ここら辺はグローバル変数とか定数とか
 # マスは15*15
-# gridSize = {'width': 15, 'height': 15}
 gridSize = Size(15, 15)
-#grid_height = 15
-#grid_width = 15
-
+grid_height = 15
+grid_width = 15
 
 # デバッグモードのフラグ
 isDebug = True
 
-# マス目
 i = 0
+#マス目を格納する配列
 frame_list = []
 
 # 0=empty,1=player,2=AI
@@ -53,33 +51,28 @@ class gameMode(IntEnum):
     Normal = 0  # AIとの戦い
     quit = auto()  # やめる
 
-
 # Playerの情報
-# 'movedCount'は手数記録用(ランキングと結果に使いたい)(<- 駒の数を数えて計算すればいいのでは？)
-# ゲームモード(難易度)(<- diffだと違いを表してるみたい)
-diffNum = -1
+# 'movedCount'は手数記録用(ランキングと結果に使いたい)(<- 駒の数を数えて計算すればいいのでは？)(<-2重ループ書いて見るのが個人的にめんどくさいため)
+# ゲームモード(難易度)(<- diffだと違いを表してるみたい)(<-modeNumにしました)
+modeNum = -1
 playerState = {'gameMode': gameMode(0), 'AILevel': AILevel(0), 'movedCount': 0}
 
 if isDebug == True:
     print(playerState)
 
-# マップのデータ
-grids = np.zeros((gridSize.width, gridSize.height))
-
-# 表示するメッセージ(<- 何に使うの？)
-# messageNum = -1
-
+# マップのデータ(各数字の意味はgridStateを参照)
+grids = np.zeros((grid_height, grid_width))
 
 # メイン画面
 root = Tk()
+#タイトル
 root.title("FIVE AI")
 # フルスクリーン化
 root.state('zoomed')
 
 class gameGrid:
     # hash: そのオブジェクト固有の値で、それを判別できるような値(気に入らなかったらidでもいいけどね)
-
-    def __init__(self, hash: int, point: Point):
+    def __init__(self, hash, Point point):
         self.hash = hash
         self.state = gridState.empty
         self.point = point
@@ -133,73 +126,68 @@ def grid():
 
 def fromDropbox():
     global movedcount
+    #ドロップボックスのアカウント取得
     dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
     dbox.users_get_current_account()
 def intoDropbox():
     global movedcount
+    #ドロップボックスのアカウント取得
     dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
     dbox.users_get_current_account()
 def ranking():
     # Dropboxを使用してランキングを作りたい
     fromDropbox()
     intoDropbox()
+
 def win():
-    global diffNum
+    global modeNum
     # 結果確認画面
-    if diffNum == 1:
-        messagebox.showinfo('おめでとうございます！！', 'あなたはWEAK AIに' +
-                            movedcount + '手で勝利しました！！このAIは弱かったですか？弱かったですね。')
-    elif diffNum == 2:
-        messagebox.showinfo('おめでとうございます！！', 'あなたはMIDDLE AIに' +
-                            movedcount + '手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
-    elif diffNum == 3:
-        messagebox.showinfo('おめでとうございます！！', 'あなたはSTRONG AIに' +
-                            movedcount + '手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
-    elif diffNum == 4:
-        messagebox.showinfo('おめでとうございます！！', 'あなたは??? AIに' + movedcount +
-                            '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
+    if modeNum == 1:
+        messagebox.showinfo('おめでとうございます！！', 'あなたはWEAK AIに' + movedcount + '手で勝利しました！！このAIは弱かったですか？弱かったですね。')
+    elif modeNum == 2:
+        messagebox.showinfo('おめでとうございます！！', 'あなたはMIDDLE AIに' + movedcount + '手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
+    elif modeNum == 3:
+        messagebox.showinfo('おめでとうございます！！', 'あなたはSTRONG AIに' + movedcount + '手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
+    elif modeNum == 4:
+        messagebox.showinfo('おめでとうございます！！', 'あなたは??? AIに' + movedcount + '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
     # ランキングに登録
     ranking()
-
+    
 def lose():
-    if diffNum == 1:
-        messagebox.showinfo('残念・・・', 'あなたはWEAK AIに' +
-                            movedcount + '手粘ったものの負けてしまいました・・・')
-    elif diffNum == 2:
-        messagebox.showinfo('残念・・・', 'あなたはMIDDLE AIに' +
-                            movedcount + '手粘ったものの負けてしまいました・・・')
-    elif diffNum == 3:
-        messagebox.showinfo('残念・・・', 'あなたはSTRONG AIに' +
-                            movedcount + '手粘ったものの負けてしまいました・・・')
-    elif diffNum == 4:
-        messagebox.showinfo('残念・・・', 'あなたは??? AIに' +
-                            movedcount + '手粘ったものの負けてしまいました・・・')
+    global modeNum
+    if modeNum == 1:
+        messagebox.showinfo('残念・・・', 'あなたはWEAK AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
+    elif modeNum == 2:
+        messagebox.showinfo('残念・・・', 'あなたはMIDDLE AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
+    elif modeNum == 3:
+        messagebox.showinfo('残念・・・', 'あなたはSTRONG AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
+    elif modeNum == 4:
+        messagebox.showinfo('残念・・・', 'あなたは??? AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
 
 # 難度分け
 def we():
-    global diffNum
-    diffNum = 1
+    global modeNum
+    modeNum = 1
     grid()
     messagebox.showinfo('Notification', 'ゲームモードが変更されました(Gamemode:WEAK)')
 def mid():
-    global diffNum
-    diffNum = 2
+    global modeNum
+    modeNum = 2
     grid()
     messagebox.showinfo('Notification', 'ゲームモードが変更されました(Gamemode:MIDDLE)')
 def st():
-    global diffNum
-    diffNum = 3
+    global modeNum
+    modeNum = 3
     grid()
     messagebox.showinfo('Notification', 'ゲームモードが変更されました(Gamemode:STRONG)')
 def omg():
-    global diffNum
-    diffNum = 4
+    global modeNum
+    modeNum = 4
     grid()
     messagebox.showinfo('Notification', 'ゲームモードが変更されました(Gamemode:???)')
 
 def qui():
     root.quit()
-
 
 # メニュー
 menu_ROOT = Menu(root)
@@ -223,13 +211,12 @@ game_frame = Frame(root_frame, width=300, height=300,
 root_frame.pack()
 game_frame.pack(pady=5, padx=5)
 grid()
+
 # 最初の注意事項
-messagebox.showinfo(
-    '難易度選択', 'この画面ではまだAIは動いていません。上のメニュー(AIの項目)から難易度を選んでください。(駒を置くことはできます)')
+messagebox.showinfo('難易度選択', 'この画面ではまだAIは動いていません。上のメニュー(AIの項目)から難易度を選んでください。(駒を置くことはできます)')
 
 # メインループ
 root.mainloop()
-
 
 # FIVE AI Project(2018.9-) by Kuske and severrabaen
 # AI-Kuske,(severrabaen)
