@@ -21,13 +21,10 @@ class Point:
 # ここら辺はグローバル変数とか定数とか
 # マスは15*15
 gridSize = Size(15, 15)
-grid_height = 15
-grid_width = 15
 
 # デバッグモードのフラグ
 isDebug = True
 
-i = 0
 #マス目を格納する配列
 frame_list = []
 
@@ -53,7 +50,7 @@ class gameMode(IntEnum):
 
 # Playerの情報
 # 'movedCount'は手数記録用(ランキングと結果に使いたい)(<- 駒の数を数えて計算すればいいのでは？)(<-2重ループ書いて見るのが個人的にめんどくさいため)
-# ゲームモード(難易度)(<- diffだと違いを表してるみたい)(<-modeNumにしました)
+# ゲームモード(難易度)(<- diffだと違いを表してるみたい)(<-modeNumにしました)(playerState['AILebel']を使いませんか？)
 modeNum = -1
 playerState = {'gameMode': gameMode(0), 'AILevel': AILevel(0), 'movedCount': 0}
 
@@ -61,7 +58,7 @@ if isDebug == True:
     print(playerState)
 
 # マップのデータ(各数字の意味はgridStateを参照)
-grids = np.zeros((grid_height, grid_width))
+grids = np.zeros((gridSize.width, gridSize.height))
 
 # メイン画面
 root = Tk()
@@ -72,7 +69,7 @@ root.state('zoomed')
 
 class gameGrid:
     # hash: そのオブジェクト固有の値で、それを判別できるような値(気に入らなかったらidでもいいけどね)
-    def __init__(self, hash, Point point):
+    def __init__(self, hash: int, point: Point):
         self.hash = hash
         self.state = gridState.empty
         self.point = point
@@ -92,17 +89,21 @@ def leftClicked(event):
         changeGrid(frame_list[hash].point, hash, gridState.player)
 
         # AIのターン
-        if diffNum == 1:
+        if playerState['AILevel'] == AILevel.week:
             weakai()
-        elif diffNum == 2:
+        elif playerState['AILevel'] == AILevel.middle:
             middleai()
-        elif diffNum == 3:
+        elif playerState['AILevel'] == AILevel.strong:
             strongai()
-        elif diffNum == 4:
+        elif playerState['AILevel'] == AILevel.omg:
             omgai()
 
-    else:
+    else:   # ラベルの隙間をクリックしたとき
         messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
+
+def textLabelClicked(event):
+    messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
+
 
 # マス目の状態を変更する
 def changeGrid(point: Point, hash: int, toState: int):
@@ -111,8 +112,11 @@ def changeGrid(point: Point, hash: int, toState: int):
     global movedcount, diffNum, gridText, frame_list
     frame_list[hash].frame.configure(relief='ridge', bd='1')
 
+    # マスの中に文字を表示
     frame_list[hash].textLabel = Label(frame_list[hash].frame, text = gridText[toState], bg = 'LightGray')
     frame_list[hash].textLabel.place(width = 28, height = 28)
+    frame_list[hash].textLabel.bind('<1>', textLabelClicked)
+
 
 # マス目生成
 def grid():
@@ -152,7 +156,7 @@ def win():
         messagebox.showinfo('おめでとうございます！！', 'あなたは??? AIに' + movedcount + '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
     # ランキングに登録
     ranking()
-    
+
 def lose():
     global modeNum
     if modeNum == 1:
