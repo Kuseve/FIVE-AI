@@ -7,8 +7,8 @@ import time
 from enum import *
 from flask import Flask
 #import tensorflow as tf
-#import AI
-
+from AI import *
+import define
 #todo:define.pyを作る(chickenがやる)
 
 # 構造体の宣言
@@ -22,11 +22,8 @@ class Point:
         self.x = x
         self.y = y
 
-# マスは15*15
-gridSize = Size(15, 15)
-
 # デバッグモードのフラグ
-isDebug = True
+isDebug = False
 
 #マス目を格納する配列
 frame_list = []
@@ -36,8 +33,6 @@ class gridState(IntEnum):
     empty = 0
     player = auto()
     AI = auto()
-
-gridText = ['', '○', 'x']
 
 # AIの強さ
 class AILevel(IntEnum):
@@ -52,13 +47,13 @@ class gameMode(IntEnum):
     quit = auto()  # やめる
 
 # Playerの情報
-playerState = {'gameMode': gameMode(0), 'AILevel': AILevel(0), 'movedCount': 0}
+playerState = {'gameMode': define.gameMode(0), 'AILevel': define.AILevel(0), 'movedCount': 0}
 
 if isDebug == True:
     print(playerState)
 
 # マップのデータ(各数字の意味はgridStateを参照)
-grids = np.zeros((gridSize.width, gridSize.height))
+grids = np.zeros((define.gridSize.width, define.gridSize.height))
 
 # メイン画面
 root = Tk()
@@ -78,15 +73,15 @@ class gameGrid:
         self.frame.bind("<1>", leftClicked) # イベントの設定
         self.frame.num = hash
         self.frame.grid(row=point.x, column=point.y)
-    
+
 #マス目が全部埋まってるか確認(埋まっているならTrue,elseはFalseを返す)
 def isFill():
     i=0
     j=0
     fill=True
-    for i in range(gridSize.width):
-        for j in range(gridSize.height):
-            if  not frame_list[i][j]=='o' and not frame_list[i][j]=='x':
+    for i in range(define.gridSize.width):
+        for j in range(define.gridSize.height):
+            if  not grids[i][j]=='o' and not grids[i][j]=='x':
                 fill=False
     return fill
 
@@ -99,18 +94,24 @@ def leftClicked(event):
         playerState['movedCount'] += 1
         changeGrid(frame_list[hash].point, hash, gridState.player)
         if isFill()==True:
-            win()
+            win()   # 引き分けじゃないの？
         # AIのターン
         if playerState['AILevel'] == AILevel.week:
-            weakAI()
+            buf = weakAI()
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
         elif playerState['AILevel'] == AILevel.middle:
-            middleAI()
+            buf = middleAI()
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
         elif playerState['AILevel'] == AILevel.strong:
-            strongAI()
+            buf = strongAI()
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
         elif playerState['AILevel'] == AILevel.omg:
-            omgAI()
+            buf = omgAI()
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
+
         if isFill()==True:
-            win()
+            win()   # 引き分けじゃないの？
+
     else:   # ラベルの隙間をクリックしたとき
         messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
 
@@ -121,10 +122,10 @@ def textLabelClicked(event):
 def changeGrid(point: Point, hash: int, toState: int):
     if isDebug == True:
         messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
-    global movedcount, diffNum, gridText, frame_list
+    global movedcount, diffNum, define.gridText, frame_list
     frame_list[hash].frame.configure(relief='ridge', bd='1')
     # マスの中に文字を表示
-    frame_list[hash].textLabel = Label(frame_list[hash].frame, text = gridText[toState], bg = 'LightGray')
+    frame_list[hash].textLabel = Label(frame_list[hash].frame, text = define.gridText[toState], bg = 'LightGray')
     frame_list[hash].textLabel.place(width = 28, height = 28)
     frame_list[hash].textLabel.bind('<1>', textLabelClicked)
 
@@ -132,8 +133,8 @@ def changeGrid(point: Point, hash: int, toState: int):
 def grid():
     global frame_list
     i = 0
-    for x in range(gridSize.width):
-        for y in range(gridSize.height):
+    for x in range(define.gridSize.width):
+        for y in range(define.gridSize.height):
             frame_list.append(gameGrid(i, Point(x, y)))
             i += 1
 
@@ -142,7 +143,7 @@ def fromDropbox():
     #ドロップボックスのアカウント取得
     dbox = dropbox.Dropbox(os.environ["DROPBOX_KEY"])
     dbox.users_get_current_account()
-    
+
 def intoDropbox():
     global movedcount
     #ドロップボックスのアカウント取得
