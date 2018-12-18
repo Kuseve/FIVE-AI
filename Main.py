@@ -18,12 +18,12 @@ class gameMode(IntEnum):
     quit = auto()  # やめる
 
 # Playerの情報
-playerState = {'gameMode': define.gameMode(0), 'AILevel': define.AILevel(0), 'movedCount': 0}
+playerState = {'gameMode': define.gameMode(0), 'define.AILevel': define.AILevel(0), 'movedCount': 0}
 
 if define.isDebug == True:
     print(playerState)
 
-# マップのデータ(各数字の意味はgridStateを参照)
+# マップのデータ(各数字の意味はdefine.gridStateを参照)
 grids = np.zeros((define.gridSize.width, define.gridSize.height))
 
 root = Tk()
@@ -35,9 +35,9 @@ root.state('zoomed')
 root.resizable(0,0)
 
 class gameGrid:
-    def __init__(self, hash: int, point: Point):
+    def __init__(self, hash: int, point: define.Point):
         self.hash = hash
-        self.state = gridState.empty
+        self.state = define.gridState.empty
         self.point = point
         self.frame = Frame(game_frame, width=30,height=30,bd=3, relief='raised', bg='LightGray')
         self.frame.bind("<1>", leftClicked) # イベントの設定
@@ -59,25 +59,25 @@ def isFill():
 def leftClicked(event):
     global grids, playerState
     hash = event.widget.num
-    if grids[frame_list[hash].point.x][frame_list[hash].point.y] == gridState.empty:
-        grids[frame_list[hash].point.x][frame_list[hash].point.y] = gridState.player
+    if grids[frame_list[hash].point.x][frame_list[hash].point.y] == define.gridState.empty:
+        grids[frame_list[hash].point.x][frame_list[hash].point.y] = define.gridState.player
         playerState['movedCount'] += 1
-        changeGrid(frame_list[hash].point, hash, gridState.player)
+        changeGrid(frame_list[hash].point, hash, define.gridState.player)
         if isFill()==True:
             win()   # 引き分けじゃないの？
         # AIのターン
-        if playerState['AILevel'] == AILevel.week:
+        if playerState['define.AILevel'] == define.AILevel.week:
             buf = weakAI()
-            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
-        elif playerState['AILevel'] == AILevel.middle:
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, define.gridState.AI)
+        elif playerState['define.AILevel'] == define.AILevel.middle:
             buf = middleAI()
-            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
-        elif playerState['AILevel'] == AILevel.strong:
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, define.gridState.AI)
+        elif playerState['define.AILevel'] == define.AILevel.strong:
             buf = strongAI()
-            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
-        elif playerState['AILevel'] == AILevel.omg:
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, define.gridState.AI)
+        elif playerState['define.AILevel'] == define.AILevel.omg:
             buf = omgAI()
-            changeGrid(buf, define.gridSize.width * buf.y + buf.x, gridState.AI)
+            changeGrid(buf, define.gridSize.width * buf.y + buf.x, define.gridState.AI)
 
         if isFill()==True:
             win()   # 引き分けじゃないの？
@@ -89,7 +89,7 @@ def textLabelClicked(event):
     messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
 
 # マス目の状態を変更する
-def changeGrid(point: Point, hash: int, toState: int):
+def changeGrid(point: define.Point, hash: int, toState: int):
     if define.isDebug == True:
         messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
     global movedcount, diffNum, gridText, frame_list
@@ -105,7 +105,7 @@ def grid():
     i = 0
     for x in range(define.gridSize.width):
         for y in range(define.gridSize.height):
-            frame_list.append(gameGrid(i, Point(x, y)))
+            frame_list.append(gameGrid(i, define.Point(x, y)))
             i += 1
 
 def fromDropbox():

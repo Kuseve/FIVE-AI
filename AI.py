@@ -1,10 +1,11 @@
 from numpy.random import *
 import numpy as np
 from Main import *
+import define
 
 # AIのコマンド
 def weakAI():
-    return Point(randint(14), randint(14))
+    return define.Point(randint(14), randint(14))
 
 def middleAI():
     return 0
