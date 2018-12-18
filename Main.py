@@ -20,7 +20,7 @@ class gameMode(IntEnum):
 # Playerの情報
 playerState = {'gameMode': define.gameMode(0), 'AILevel': define.AILevel(0), 'movedCount': 0}
 
-if isDebug == True:
+if define.isDebug == True:
     print(playerState)
 
 # マップのデータ(各数字の意味はgridStateを参照)
@@ -90,7 +90,7 @@ def textLabelClicked(event):
 
 # マス目の状態を変更する
 def changeGrid(point: Point, hash: int, toState: int):
-    if isDebug == True:
+    if define.isDebug == True:
         messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
     global movedcount, diffNum, gridText, frame_list
     frame_list[hash].frame.configure(relief='ridge', bd='1')
