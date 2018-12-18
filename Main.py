@@ -122,7 +122,7 @@ def textLabelClicked(event):
 def changeGrid(point: Point, hash: int, toState: int):
     if isDebug == True:
         messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
-    global movedcount, diffNum, define.gridText, frame_list
+    global movedcount, diffNum, gridText, frame_list
     frame_list[hash].frame.configure(relief='ridge', bd='1')
     # マスの中に文字を表示
     frame_list[hash].textLabel = Label(frame_list[hash].frame, text = define.gridText[toState], bg = 'LightGray')
