@@ -6,10 +6,8 @@ import datetime
 import time
 from enum import *
 from flask import Flask
-#import tensorflow as tf
 from AI import *
 import define
-#todo:define.pyを作る(chickenがやる)
 
 # 構造体の宣言
 class Size:
@@ -55,13 +53,12 @@ if isDebug == True:
 # マップのデータ(各数字の意味はgridStateを参照)
 grids = np.zeros((define.gridSize.width, define.gridSize.height))
 
-# メイン画面
 root = Tk()
 #タイトル
 root.title("FIVE AI")
 # フルスクリーン化
 root.state('zoomed')
-#サイズ変更不可にする(バグるのでね)
+#サイズ変更不可にする(無限にバグるのでね)
 root.resizable(0,0)
 
 class gameGrid:
@@ -229,7 +226,7 @@ game_frame.pack(pady=5, padx=5)
 grid()
 
 # 最初の注意事項
-messagebox.showinfo('注意！！', 'この画面ではまだAIは動いていません。上のメニュー(GAMEの項目)から難易度を選んでください。(駒を置くことはできます)')
+messagebox.showinfo('注意！！', 'この画面ではまだAIと対戦はできません!\n上のメニュー(GAMEの項目)から難易度を選んでください。(駒を置くことはできます)')
 
 # メインループ
 root.mainloop()
