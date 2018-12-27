@@ -55,6 +55,35 @@ def isFill():
                 fill=False
     return fill
 
+def win():
+    global modeNum
+    # 結果確認画面
+    if modeNum == 1:
+        messagebox.showinfo('おめでとうございます！！', 'あなたはWEAK AIに' + movedcount + '手で勝利しました！！このAIは弱かったですか？弱かったですね。')
+    elif modeNum == 2:
+        messagebox.showinfo('おめでとうございます！！', 'あなたはMIDDLE AIに' + movedcount + '手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
+    elif modeNum == 3:
+        messagebox.showinfo('おめでとうございます！！', 'あなたはSTRONG AIに' + movedcount + '手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
+    elif modeNum == 4:
+        messagebox.showinfo('おめでとうございます！！', 'あなたは??? AIに' + movedcount + '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
+    # ランキングに登録する
+    ranking()
+
+def lose():
+    global modeNum
+    # 結果確認画面
+    if modeNum == 1:
+        messagebox.showinfo('残念・・・', 'あなたはWEAK AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
+    elif modeNum == 2:
+        messagebox.showinfo('残念・・・', 'あなたはMIDDLE AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
+    elif modeNum == 3:
+        messagebox.showinfo('残念・・・', 'あなたはSTRONG AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
+    elif modeNum == 4:
+        messagebox.showinfo('残念・・・', 'あなたは??? AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
+        
+def draw():
+    messagebix.showinfo('引き分け！','引き分けです。')
+
 # マス目が左クリックされた際の処理
 def leftClicked(event):
     global grids, playerState
@@ -124,35 +153,6 @@ def ranking():
     # Dropboxを使用して難易度ごとのランキングを作りたい
     fromDropbox()
     intoDropbox()
-
-def win():
-    global modeNum
-    # 結果確認画面
-    if modeNum == 1:
-        messagebox.showinfo('おめでとうございます！！', 'あなたはWEAK AIに' + movedcount + '手で勝利しました！！このAIは弱かったですか？弱かったですね。')
-    elif modeNum == 2:
-        messagebox.showinfo('おめでとうございます！！', 'あなたはMIDDLE AIに' + movedcount + '手で勝利しました！！このAIは常人レベルに強さを留めてあります。まあ勝てますよね。')
-    elif modeNum == 3:
-        messagebox.showinfo('おめでとうございます！！', 'あなたはSTRONG AIに' + movedcount + '手で勝利しました！！このAIに勝つとは中々ですね・・・五目並べプロ級です。')
-    elif modeNum == 4:
-        messagebox.showinfo('おめでとうございます！！', 'あなたは??? AIに' + movedcount + '手で勝利しました！！勝てたんですか...このAIには誰も勝てない位の難易度にしたつもりなんですけどね...')
-    # ランキングに登録する
-    ranking()
-
-def lose():
-    global modeNum
-    # 結果確認画面
-    if modeNum == 1:
-        messagebox.showinfo('残念・・・', 'あなたはWEAK AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
-    elif modeNum == 2:
-        messagebox.showinfo('残念・・・', 'あなたはMIDDLE AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
-    elif modeNum == 3:
-        messagebox.showinfo('残念・・・', 'あなたはSTRONG AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
-    elif modeNum == 4:
-        messagebox.showinfo('残念・・・', 'あなたは??? AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
-        
-def draw():
-    messagebix.showinfo('引き分け！','引き分けです。')
 
 # 難易度選択時の処理
 def we():
