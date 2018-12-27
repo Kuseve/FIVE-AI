@@ -64,7 +64,7 @@ def leftClicked(event):
         playerState['movedCount'] += 1
         changeGrid(frame_list[hash].point, hash, define.gridState.player)
         if isFill()==True:
-            win()   # 引き分けじゃないの？
+            draw()
         # AIのターン
         if playerState['define.AILevel'] == define.AILevel.week:
             buf = weakAI()
@@ -80,7 +80,7 @@ def leftClicked(event):
             changeGrid(buf, define.gridSize.width * buf.y + buf.x, define.gridState.AI)
 
         if isFill()==True:
-            win()   # 引き分けじゃないの？
+            draw()
 
     else:   # ラベルの隙間をクリックしたとき
         messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
@@ -150,6 +150,9 @@ def lose():
         messagebox.showinfo('残念・・・', 'あなたはSTRONG AIに' +movedcount + '手粘ったものの負けてしまいました・・・')
     elif modeNum == 4:
         messagebox.showinfo('残念・・・', 'あなたは??? AIに' + movedcount + '手粘ったものの負けてしまいました・・・')
+        
+def draw():
+    messagebix.showinfo('引き分け！','引き分けです。')
 
 # 難易度選択時の処理
 def we():
