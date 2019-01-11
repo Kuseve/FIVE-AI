@@ -55,6 +55,10 @@ def isFill():
                 fill=False
     return fill
 
+#禁じ手のやつ
+def forbidden():
+    messagebox.showinfo('禁じ手です!','五目並べのルールで禁止されている手です!')
+
 def win():
     global modeNum
     # 結果確認画面
@@ -119,6 +123,8 @@ def textLabelClicked(event):
 
 # マス目の状態を変更する
 def changeGrid(point: define.Point, hash: int, toState: int):
+    #禁じ手のチェック
+    if 
     if define.isDebug == True:
         messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
     global movedcount, diffNum, gridText, frame_list
