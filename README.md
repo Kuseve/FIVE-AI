@@ -1,2 +1,2 @@
 # FIVE-AI
-Artificial intelligence that battle against you in Gobang, which is Japanese traditional game.
+五目並べ自動対戦AI。名前は「五目」→「FIVE EYE」→「FIVE AI」。severrabaenが考えた。
