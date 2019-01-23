@@ -1,10 +1,13 @@
 import numpy as np
 from enum import *
 
-# デバッグモードのフラグ
+#マス目を格納する配列
+frame_list = []
+
+#デバッグモードのフラグ
 isDebug = False
 
-# 構造体の宣言
+#構造体の宣言
 #----------------
 class Size:
     def __init__(self, width, height):
@@ -17,9 +20,9 @@ class Point:
         self.x = x
         self.y = y
 
-# Enumの宣言
+#Enumの宣言
 #-------------------
-# 0=empty,1=player,2=AI
+#0=empty,1=player,2=AI
 class gridState(IntEnum):
     empty = 0
     player = auto()
@@ -27,17 +30,17 @@ class gridState(IntEnum):
 
 gridText = ['', '○', 'x']
 
-# AIの強さ
+#AIの強さ
 class AILevel(IntEnum):
     week = 0
     middle = auto()
     strong = auto()
     omg = auto()
 
-# 戦うモード
+#戦うモード
 class gameMode(IntEnum):
     Normal = 0  # AIとの戦い
     quit = auto()  # やめる
 
-# 変数
+#変数
 gridSize = Size(15, 15)
