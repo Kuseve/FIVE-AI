@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import numpy as np
-#import dropbox
+import dropbox
 import datetime
 import time
 from enum import *
@@ -58,6 +58,19 @@ def isFill():
 #禁じ手のやつ
 def forbidden():
     messagebox.showinfo('禁じ手です!','五目並べのルールで禁止されている手です!')
+    
+#マス目の状態を変更する
+def changeGrid(point: define.Point, hash: int, toState: int):
+    #禁じ手のチェック
+    if 
+    if define.isDebug == True:
+        messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
+    global movedcount, diffNum, gridText, frame_list
+    frame_list[hash].frame.configure(relief='ridge', bd='1')
+    # マスの中に文字を表示
+    frame_list[hash].textLabel = Label(frame_list[hash].frame, text = define.gridText[toState], bg = 'LightGray')
+    frame_list[hash].textLabel.place(width = 28, height = 28)
+    frame_list[hash].textLabel.bind('<1>', textLabelClicked)
 
 def win():
     global modeNum
@@ -120,19 +133,6 @@ def leftClicked(event):
 
 def textLabelClicked(event):
     messagebox.showinfo('駒を置くことができません', 'まだ駒が置かれていないマスにのみ駒を置くことができます。')
-
-# マス目の状態を変更する
-def changeGrid(point: define.Point, hash: int, toState: int):
-    #禁じ手のチェック
-    if 
-    if define.isDebug == True:
-        messagebox.showinfo('', 'point : {' + str(point.x) + ', ' + str(point.y) + '}'  + '\nhash : ' + str(hash) + '\ntoState : ' + str(toState))
-    global movedcount, diffNum, gridText, frame_list
-    frame_list[hash].frame.configure(relief='ridge', bd='1')
-    # マスの中に文字を表示
-    frame_list[hash].textLabel = Label(frame_list[hash].frame, text = define.gridText[toState], bg = 'LightGray')
-    frame_list[hash].textLabel.place(width = 28, height = 28)
-    frame_list[hash].textLabel.bind('<1>', textLabelClicked)
 
 # マス目生成
 def grid():
