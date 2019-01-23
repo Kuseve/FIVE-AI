@@ -9,9 +9,6 @@ from flask import Flask
 from AI import *
 import define
 
-#マス目を格納する配列
-frame_list = []
-
 # 戦うモード
 class gameMode(IntEnum):
     Normal = 0  # AIとの戦い
